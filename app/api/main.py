@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from fastapi import FastAPI, HTTPException
 
-from .config import get_settings
-from .graph import run_job
-from .models import JobInput, JobResult
-from .observability import run_langfuse_smoke_test
+from app.core.config import get_settings
+from app.core.schemas import JobInput, JobResult
+from app.core.observability import run_langfuse_smoke_test
+from app.pipelines.graph import run_job
 
 app = FastAPI(title="Agentic Search API", version="0.1.0")
 
@@ -16,10 +16,10 @@ def health() -> dict:
 
 
 @app.post("/jobs", response_model=JobResult)
-def create_job(payload: JobInput) -> JobResult:
+async def create_job(payload: JobInput) -> JobResult:
     settings = get_settings()
     try:
-        return run_job(payload, settings)
+        return await run_job(payload, settings)
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 

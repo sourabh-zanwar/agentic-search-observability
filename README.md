@@ -21,7 +21,7 @@ uv sync
 3. Run the API:
 
 ```bash
-uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+uv run uvicorn app.api.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 ## Running with Docker
@@ -104,9 +104,21 @@ GET /debug/langfuse
 ```
 
 ## Guardrails middleware
-The query planning step uses LangChain’s agent middleware API, which allows custom guardrails to run before the agent executes. You can add additional middleware in `app/guardrails.py` and toggle with `GUARDRAILS_ENABLED`. citeturn1search8turn1search10
+The query planning step uses LangChain’s agent middleware API, which allows custom guardrails to run before the agent executes. You can add additional middleware in `app/core/guardrails.py` and toggle with `GUARDRAILS_ENABLED`. citeturn1search8turn1search10
 
 ## Notes
-- Web search uses Tavily by default. Set `TAVILY_API_KEY` or swap out the tool in `app/graph.py`.
+- Web search uses Tavily by default. Set `TAVILY_API_KEY` or swap out the tool in `app/services/search.py`.
 - Choose a valid OpenAI model name and set `OPENAI_MODEL` accordingly in `.env`.
 - If the API runs in Docker and Langfuse runs on your host, set `LANGFUSE_HOST` to `http://host.docker.internal:3000` (Mac/Windows) or to the Langfuse service name if they share a Docker network.
+
+## Query Planning Controls
+The query planner can batch entities and properties to reduce total web searches while preserving coverage. Configure with:
+- `ENTITIES_PER_QUERY` (default 3)
+- `PROPERTIES_PER_QUERY` (default 2)
+- `MAX_QUERIES` (default 50)
+- `QUERY_PLAN_MODE` = `batched` | `llm` | `hybrid`
+- `QUERY_REFINE_WITH_LLM` (default false; only for `hybrid`)
+
+## Search Concurrency
+Web searches run in parallel with a concurrency limit:
+- `SEARCH_CONCURRENCY` (default 5)

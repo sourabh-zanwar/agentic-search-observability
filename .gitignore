@@ -6,6 +6,6 @@ env/
 venv/
 ENV/
 
-app/__pycache__/*
+**/__pycache__
 langfuse/*
 **/.DS_Store

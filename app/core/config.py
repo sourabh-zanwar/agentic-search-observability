@@ -19,6 +19,12 @@ class Settings(BaseSettings):
     max_results_per_query: int = Field(
         default=5, ge=1, le=10, alias="MAX_RESULTS_PER_QUERY"
     )
+    search_concurrency: int = Field(default=5, ge=1, le=20, alias="SEARCH_CONCURRENCY")
+    max_queries: int = Field(default=50, ge=1, le=500, alias="MAX_QUERIES")
+    entities_per_query: int = Field(default=3, ge=1, le=10, alias="ENTITIES_PER_QUERY")
+    properties_per_query: int = Field(default=2, ge=1, le=10, alias="PROPERTIES_PER_QUERY")
+    query_plan_mode: str = Field(default="batched", alias="QUERY_PLAN_MODE")
+    query_refine_with_llm: bool = Field(default=False, alias="QUERY_REFINE_WITH_LLM")
 
     langfuse_enabled: bool = Field(default=False, alias="LANGFUSE_ENABLED")
     langfuse_public_key: Optional[str] = Field(
@@ -39,6 +45,7 @@ class Settings(BaseSettings):
     langfuse_flush_each_job: bool = Field(
         default=False, alias="LANGFUSE_FLUSH_EACH_JOB"
     )
+    log_level: str = Field(default="INFO", alias="LOG_LEVEL")
 
 
 @lru_cache
